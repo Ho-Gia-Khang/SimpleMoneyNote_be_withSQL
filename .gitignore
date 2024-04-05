@@ -1,0 +1,4 @@
+node_modules/
+
+# keep environment variable out of source control
+.env
