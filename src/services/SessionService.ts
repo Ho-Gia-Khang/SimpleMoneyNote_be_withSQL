@@ -1,4 +1,4 @@
-import prisma from "../models/client";
+import prisma from "./client";
 import { signJwt, verifyJwt } from "../utils/jwt";
 import { get } from "lodash";
 import { findUser } from "./UserService";
@@ -71,4 +71,16 @@ export async function reIssueAccessToken({
         { expiresIn: "30m" }
     );
     return accessToken;
+}
+
+export async function deleteSessions({
+    userId,
+    valid,
+}: {
+    userId: string;
+    valid?: boolean;
+}) {
+    return prisma.session.deleteMany({
+        where: { userId: userId, valid: valid },
+    });
 }

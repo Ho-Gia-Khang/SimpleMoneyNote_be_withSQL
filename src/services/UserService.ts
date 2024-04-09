@@ -1,5 +1,5 @@
 import { omit } from "lodash";
-import prisma from "../models/client";
+import prisma from "./client";
 import { UserInput } from "../models/UserModel";
 import bcrypt from "bcrypt";
 

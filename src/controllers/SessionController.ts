@@ -2,6 +2,7 @@ import { Request, Response } from "express";
 import { validatePassword } from "../services/UserService";
 import {
     createSession,
+    deleteSessions,
     findSessions,
     updateSession,
 } from "../services/SessionService";
@@ -45,7 +46,11 @@ export async function getUserSessionsHandler(req: Request, res: Response) {
 export async function deleteSessionHandler(req: Request, res: Response) {
     const userId = res.locals.user.id;
 
-    await updateSession({ query: userId, update: false });
+    const sessions = await updateSession({ query: userId, update: false });
+
+    if (sessions) {
+        await deleteSessions({ userId: userId, valid: false });
+    }
 
     return res.send({
         accessToken: null,
