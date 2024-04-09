@@ -12,3 +12,81 @@ datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
 }
+
+model User {
+  id          String       @id @default(cuid())
+  email       String       @unique
+  password    String       @unique
+  appSettings AppSettings?
+  book        Book[]
+  wallet      Wallet[]
+}
+
+model AppSettings {
+  id              String @id @default(cuid())
+  defaultTheme    String @default("aqua")
+  defaultCurrency String @default("VND")
+  language        String @default("vietnamese")
+  expenseColor    String @default("red")
+  incomeColor     String @default("green")
+  user            User   @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  userId          String @unique
+}
+
+model Book {
+  id     String @id @default(cuid())
+  name   String @unique
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  userId String @unique
+  Note   Note[]
+}
+
+model Note {
+  id          String    @id @default(cuid())
+  type        Type      @default(expense)
+  theme       String
+  amount      Float
+  date        DateTime  @default(now())
+  description String?
+  book        Book      @relation(fields: [bookId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  bookId      String    @unique
+  wallet      Wallet    @relation(fields: [walletId], references: [id])
+  walletId    String    @unique
+  category    Category? @relation(fields: [categoryId], references: [id])
+  categoryId  String?   @unique
+}
+
+model Wallet {
+  id          String  @id @default(cuid())
+  user        User    @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  userId      String  @unique
+  note        Note[]
+  name        String  @unique
+  balance     Float
+  currency    String
+  icon        String  @default("/assets/default-wallet-icon.svg")
+  theme       String
+  interest    Float?
+  description String?
+}
+
+model Category {
+  id     String  @id @default(cuid())
+  name   String  @unique
+  type   Type    @default(expense)
+  icon   String  @default("/assets/default-category-icon.svg")
+  note   Note[]
+  budget Budget?
+}
+
+model Budget {
+  id         String   @id @default(cuid())
+  category   Category @relation(fields: [categoryId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  categoryId String   @unique
+  limit      Float
+}
+
+enum Type {
+  expense
+  income
+}
