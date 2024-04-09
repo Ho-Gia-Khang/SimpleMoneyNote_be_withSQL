@@ -3,13 +3,27 @@ import {
     createUserHandler,
     deleteUserHandler,
 } from "../controllers/UserController";
+import validate from "../middlewares/validateResource";
+import { createUserSchema } from "../models/UserModel";
+import {
+    createUserSessionHandler,
+    deleteSessionHandler,
+} from "../controllers/SessionController";
+import { createSessionSchema } from "../models/SessionModel";
+import requireUser from "../middlewares/requireUser";
 
 const userRouter = express.Router();
 
 // static routes
-userRouter.post("/create", createUserHandler);
+userRouter.post("/create", validate(createUserSchema), createUserHandler);
+userRouter.post(
+    "/login",
+    validate(createSessionSchema),
+    createUserSessionHandler
+);
+userRouter.delete("/logout", requireUser, deleteSessionHandler);
 
 // dynamic routes
-userRouter.delete("/delete/:userId", deleteUserHandler);
+userRouter.delete("/delete/:userId", requireUser, deleteUserHandler);
 
 export default userRouter;

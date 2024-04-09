@@ -20,6 +20,14 @@ model User {
   appSettings AppSettings?
   book        Book[]
   wallet      Wallet[]
+  Session     Session[]
+}
+
+model Session {
+  id     String  @id @default(cuid())
+  user   User    @relation(fields: [userId], references: [id])
+  userId String
+  valid  Boolean
 }
 
 model AppSettings {
