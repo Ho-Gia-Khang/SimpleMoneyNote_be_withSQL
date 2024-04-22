@@ -1,5 +1,7 @@
 import jwt from "jsonwebtoken";
+import dotenv from "dotenv";
 
+dotenv.config();
 const privateKey = process.env.JWT_PRIVATE_KEY as string;
 const publicKey = process.env.JWT_PUBLIC_KEY as string;
 

@@ -10,7 +10,10 @@ import { signJwt } from "../utils/jwt";
 
 export async function createUserSessionHandler(req: Request, res: Response) {
     // validate user password
-    const user = await validatePassword(req.body);
+    const user = await validatePassword({
+        email: req.body.email,
+        password: req.body.password,
+    });
 
     if (!user) {
         return res.status(401).send("Invalid email or password");
@@ -22,7 +25,7 @@ export async function createUserSessionHandler(req: Request, res: Response) {
     //create an access token
     const accessToken = signJwt(
         { ...user, session: session.id },
-        { expiresIn: "30m" }
+        { expiresIn: "15m" }
     );
 
     //create a refresh token

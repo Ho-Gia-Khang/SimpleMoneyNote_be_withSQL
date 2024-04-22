@@ -21,9 +21,9 @@ userRouter.post(
     validate(createSessionSchema),
     createUserSessionHandler
 );
-userRouter.delete("/logout", requireUser, deleteSessionHandler);
 
 // dynamic routes
+userRouter.delete("/logout/:userId", requireUser, deleteSessionHandler);
 userRouter.delete("/delete/:userId", requireUser, deleteUserHandler);
 
 export default userRouter;
