@@ -85,7 +85,10 @@ export async function updateWalletHandler(
             return res.status(401).send("Unauthorized");
         }
 
-        const updatedWallet = await updateWallet({ walletId, input: req.body });
+        const updatedWallet = await updateWallet({
+            walletId: walletId,
+            input: req.body,
+        });
         return res.send(updatedWallet);
     } catch (e: any) {
         console.error(e);
