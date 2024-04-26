@@ -1,5 +1,6 @@
 import express from "express";
 import validate from "../middlewares/validateResource";
+import requireUser from "../middlewares/requireUser";
 import {
     createBookHandler,
     deleteBookHandler,
@@ -7,7 +8,6 @@ import {
     getBooksHandler,
     updateBookHandler,
 } from "../controllers/BookController";
-import requireUser from "../middlewares/requireUser";
 import { bookParams, createBookSchema } from "../models/BookModel";
 
 const bookRouter = express.Router();

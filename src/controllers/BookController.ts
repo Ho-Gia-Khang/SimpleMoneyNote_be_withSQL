@@ -19,13 +19,13 @@ export async function getBooksHandler(req: Request, res: Response) {
                 .send(`User with id ${userId} does not have any books`);
         }
 
-        const bookInfo = books.map((book) => {
+        const bookInfos = books.map((book) => {
             return {
                 id: book.id,
                 name: book.name,
             };
         });
-        return res.send(bookInfo);
+        return res.send(bookInfos);
     } catch (e: any) {
         console.error(e);
         return res.sendStatus(401);
@@ -37,11 +37,6 @@ export async function getBookDetailHandler(
     res: Response
 ) {
     try {
-        const user = res.locals.user;
-        if (!user) {
-            return res.sendStatus(401);
-        }
-
         const bookId = req.params.bookId;
         const book = await findBook(bookId);
         if (!book) {

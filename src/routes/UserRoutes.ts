@@ -11,11 +11,15 @@ import {
 } from "../controllers/SessionController";
 import { createSessionSchema } from "../models/SessionModel";
 import requireUser from "../middlewares/requireUser";
+import { createAppSettingsHandler } from "../controllers/AppSettingsController";
 
 const userRouter = express.Router();
 
 // static routes
-userRouter.post("/create", validate(createUserSchema), createUserHandler);
+userRouter.post("/create", validate(createUserSchema), [
+    createUserHandler,
+    createAppSettingsHandler,
+]);
 userRouter.post(
     "/login",
     validate(createSessionSchema),

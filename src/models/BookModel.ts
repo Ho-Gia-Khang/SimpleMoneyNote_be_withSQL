@@ -7,7 +7,7 @@ export interface BookInput {
 export const createBookSchema = object({
     body: object({
         name: string({
-            required_error: "Name is required",
+            required_error: "Book name is required",
         }),
     }),
 });

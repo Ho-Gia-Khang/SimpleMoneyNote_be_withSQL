@@ -1,4 +1,4 @@
-import { BookInput, CreateBookInput } from "./../models/BookModel";
+import { BookInput } from "./../models/BookModel";
 import prisma from "./client";
 
 export async function findBooks(userId: string) {
