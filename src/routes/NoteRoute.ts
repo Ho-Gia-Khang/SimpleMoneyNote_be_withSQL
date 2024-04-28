@@ -16,12 +16,10 @@ import {
 
 const noteRouter = express.Router();
 
-// static routes
-noteRouter.get("/getAll", requireUser, getNotesHandler);
-
 // dynamic routes
+noteRouter.get("/getAll/:bookId", requireUser, getNotesHandler);
 noteRouter.get(
-    "/get/:noteId",
+    "/getOne/:noteId",
     [requireUser, validate(getNoteParams)],
     getNoteDetailHandler
 );
@@ -32,7 +30,7 @@ noteRouter.post(
 );
 noteRouter.put(
     "/update/:noteId",
-    [requireUser, validate(getNoteParams), validate(createNoteSchema)],
+    [requireUser, validate(getNoteParams)],
     updateNoteHandler
 );
 noteRouter.delete(

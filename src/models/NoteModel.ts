@@ -1,5 +1,6 @@
 import { Type } from "@prisma/client";
-import { date, number, object, string, TypeOf, z, ZodType } from "zod";
+import { date, number, object, string, TypeOf } from "zod";
+import { types } from "../services/client";
 
 export interface NoteInput {
     amount: number;
@@ -10,8 +11,6 @@ export interface NoteInput {
     categoryId?: string;
     walletId?: string;
 }
-
-const types: ZodType<Type> = z.enum(["income", "expense"]);
 
 export const createNoteSchema = object({
     body: object({

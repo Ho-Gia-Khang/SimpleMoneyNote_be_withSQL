@@ -1,4 +1,4 @@
-import express from "express";
+import express, { NextFunction, Request, Response } from "express";
 import {
     createUserHandler,
     deleteUserHandler,
@@ -16,10 +16,15 @@ import { createAppSettingsHandler } from "../controllers/AppSettingsController";
 const userRouter = express.Router();
 
 // static routes
-userRouter.post("/create", validate(createUserSchema), [
-    createUserHandler,
-    createAppSettingsHandler,
-]);
+userRouter.post(
+    "/create",
+    validate(createUserSchema),
+    (req: Request, res: Response, next: NextFunction) => {
+        createUserHandler(req, res).then(() => {
+            createAppSettingsHandler(req, res, next);
+        });
+    }
+);
 userRouter.post(
     "/login",
     validate(createSessionSchema),

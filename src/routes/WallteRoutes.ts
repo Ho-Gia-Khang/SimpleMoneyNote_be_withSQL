@@ -21,13 +21,13 @@ walletRouter.post(
 
 // dynamic routes
 walletRouter.get(
-    "/get/:walletId",
+    "/getOne/:walletId",
     [requireUser, validate(walletParams)],
     getWalletDetailHandler
 );
 walletRouter.put(
     "/update/:walletId",
-    [requireUser, validate(walletParams), validate(createWalletSchema)],
+    [requireUser, validate(walletParams)],
     updateWalletHandler
 );
 walletRouter.delete(

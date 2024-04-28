@@ -1,4 +1,4 @@
-import { Request, Response } from "express";
+import { NextFunction, Request, Response } from "express";
 import { createAppSettingsInput } from "../models/AppSettingsModel";
 import {
     createAppSettings,
@@ -15,8 +15,6 @@ export async function getAppSettingsHandler(req: Request, res: Response) {
                 `App settings for user with id ${userId} not found`
             );
         }
-
-        return res.send(appSettings);
     } catch (e: any) {
         console.error(e);
         return res.sendStatus(401);
@@ -24,19 +22,20 @@ export async function getAppSettingsHandler(req: Request, res: Response) {
 }
 
 export async function createAppSettingsHandler(
-    req: Request<{}, {}, createAppSettingsInput["body"]>,
-    res: Response
+    req: Request,
+    res: Response,
+    next: NextFunction
 ) {
     try {
         const userId = res.locals.user.id;
-        const newAppSettings = await createAppSettings({
+        await createAppSettings({
             userId: userId,
-            input: req.body,
+            input: {},
         });
-        return res.send(newAppSettings);
+        return next();
     } catch (e: any) {
         console.error(e);
-        return res.sendStatus(401);
+        return next(e);
     }
 }
 

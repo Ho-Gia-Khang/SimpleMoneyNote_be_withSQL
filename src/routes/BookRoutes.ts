@@ -22,7 +22,7 @@ bookRouter.post(
 
 // dynamic routes
 bookRouter.get(
-    "/get/:bookId",
+    "/getOne/:bookId",
     [requireUser, validate(bookParams)],
     getBookDetailHandler
 );

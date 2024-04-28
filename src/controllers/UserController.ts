@@ -10,8 +10,11 @@ export const createUserHandler = async (
     res: Response
 ) => {
     try {
-        const newUser = await createUser(req.body);
+        const newUser = await createUser(
+            omit(req.body, "passwordConfirmation")
+        );
 
+        res.locals.user = newUser;
         return res.send(omit(newUser, "password"));
     } catch (e: any) {
         console.log(e);
