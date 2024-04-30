@@ -81,21 +81,24 @@ model Wallet {
 }
 
 model Category {
-  id     String  @id @default(cuid())
-  name   String  @unique
-  type   Type    @default(expense)
-  icon   String  @default("/assets/default-category-icon.svg")
-  user   User    @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
-  userId String  @unique
+  id     String   @id @default(cuid())
+  name   String   @unique
+  type   Type     @default(expense)
+  icon   String   @default("/assets/default-category-icon.svg")
+  user   User     @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  userId String   @unique
   note   Note[]
-  budget Budget?
+  budget Budget[]
 }
 
 model Budget {
   id         String   @id @default(cuid())
+  name       String
   category   Category @relation(fields: [categoryId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   categoryId String   @unique
   limit      Float
+
+  @@unique([categoryId, name])
 }
 
 enum Type {

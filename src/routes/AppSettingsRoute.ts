@@ -1,7 +1,5 @@
 import express from "express";
 import requireUser from "../middlewares/requireUser";
-import validate from "../middlewares/validateResource";
-import { appSettingsParams } from "../models/AppSettingsModel";
 import {
     getAppSettingsHandler,
     updateAppSettingsHandler,
@@ -9,12 +7,8 @@ import {
 
 const appSettingsRouter = express.Router();
 
-appSettingsRouter.get(
-    "/getOne/:userId",
-    [requireUser, validate(appSettingsParams)],
-    getAppSettingsHandler
-);
-
-appSettingsRouter.put("/update/:userId", requireUser, updateAppSettingsHandler);
+// static routes
+appSettingsRouter.get("/getOne", requireUser, getAppSettingsHandler);
+appSettingsRouter.put("/update", requireUser, updateAppSettingsHandler);
 
 export default appSettingsRouter;

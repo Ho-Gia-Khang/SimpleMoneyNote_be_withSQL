@@ -1,4 +1,4 @@
-import { number, object, string, TypeOf } from "zod";
+import { object, string, TypeOf } from "zod";
 import { types } from "../services/client";
 import { Type } from "@prisma/client";
 
@@ -6,7 +6,6 @@ export interface CategoryInput {
     name: string;
     type?: Type;
     icon?: string;
-    budgetId?: string;
 }
 
 export const createCategorySchema = object({

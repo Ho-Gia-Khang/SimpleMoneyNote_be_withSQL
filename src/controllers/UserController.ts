@@ -1,6 +1,6 @@
 import { Request, Response } from "express";
 import { omit } from "lodash";
-import { CreateUserInput, DeleteUserInput } from "../models/UserModel";
+import { CreateUserInput } from "../models/UserModel";
 import { createUser, deleteUser, findUser } from "../services/UserService";
 
 export const getUserhandler = async () => {};
@@ -24,17 +24,15 @@ export const createUserHandler = async (
 
 export const updateUserHandler = async () => {};
 
-export const deleteUserHandler = async (
-    req: Request<DeleteUserInput["params"]>,
-    res: Response
-) => {
+export const deleteUserHandler = async (req: Request, res: Response) => {
     try {
-        const user = await findUser(req.params.userId);
+        const userId = res.locals.user.id;
+        const user = await findUser(userId);
         if (!user) {
             return res.status(404).send("User not found");
         }
 
-        await deleteUser(req.params.userId);
+        await deleteUser(userId);
         return res.sendStatus(200);
     } catch (e: any) {
         console.error(e);

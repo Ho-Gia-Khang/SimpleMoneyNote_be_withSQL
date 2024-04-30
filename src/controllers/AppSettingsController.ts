@@ -15,6 +15,7 @@ export async function getAppSettingsHandler(req: Request, res: Response) {
                 `App settings for user with id ${userId} not found`
             );
         }
+        return res.send(appSettings);
     } catch (e: any) {
         console.error(e);
         return res.sendStatus(401);

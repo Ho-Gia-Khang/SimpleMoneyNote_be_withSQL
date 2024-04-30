@@ -7,6 +7,7 @@ import walletRouter from "./routes/WallteRoutes";
 import appSettingsRouter from "./routes/AppSettingsRoute";
 import noteRouter from "./routes/NoteRoute";
 import categoryRouter from "./routes/CategoryRoute";
+import budgetRouter from "./routes/BudgetRoute";
 
 const app = express();
 
@@ -22,6 +23,7 @@ app.use("/wallet", walletRouter);
 app.use("/appSettings", appSettingsRouter);
 app.use("/note", noteRouter);
 app.use("/category", categoryRouter);
+app.use("/budget", budgetRouter);
 
 app.listen(2000, () => {
     console.log("Server is running on port 2000");

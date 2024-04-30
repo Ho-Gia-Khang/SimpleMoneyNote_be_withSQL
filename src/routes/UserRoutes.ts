@@ -32,7 +32,7 @@ userRouter.post(
 );
 
 // dynamic routes
-userRouter.delete("/logout/:userId", requireUser, deleteSessionHandler);
-userRouter.delete("/delete/:userId", requireUser, deleteUserHandler);
+userRouter.delete("/logout", requireUser, deleteSessionHandler);
+userRouter.delete("/delete", requireUser, deleteUserHandler);
 
 export default userRouter;

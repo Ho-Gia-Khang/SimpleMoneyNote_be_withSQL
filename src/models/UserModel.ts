@@ -23,17 +23,7 @@ export const createUserSchema = object({
     }),
 });
 
-const userParams = object({
-    params: object({
-        userId: string({
-            required_error: "User ID is required",
-        }),
-    }),
-});
-
 export type CreateUserInput = Omit<
     TypeOf<typeof createUserSchema>,
     "body.passwordConfirmation"
 >;
-
-export type DeleteUserInput = TypeOf<typeof userParams>;

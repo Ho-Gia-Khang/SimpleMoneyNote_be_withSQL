@@ -2,8 +2,10 @@ import express from "express";
 
 import {
     createCategoryHandler,
+    deleteCategoryHandler,
     getCategoriesHandler,
     getCategoryDetailHandler,
+    updateCategoryHandler,
 } from "../controllers/CategoryController";
 import requireUser from "../middlewares/requireUser";
 import validate from "../middlewares/validateResource";
@@ -21,19 +23,19 @@ categoryRouter.post(
 
 // dynamic routes
 categoryRouter.get(
-    "/get/:categoryId",
+    "/getOne/:categoryId",
     [requireUser, validate(CategoryParams)],
     getCategoryDetailHandler
 );
 categoryRouter.put(
     "/update/:categoryId",
     [requireUser, validate(CategoryParams)],
-    getCategoryDetailHandler
+    updateCategoryHandler
 );
 categoryRouter.delete(
     "/delete/:categoryId",
     [requireUser, validate(CategoryParams)],
-    getCategoryDetailHandler
+    deleteCategoryHandler
 );
 
 export default categoryRouter;
