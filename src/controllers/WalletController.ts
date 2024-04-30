@@ -113,7 +113,7 @@ export async function deleteWallethandler(
         }
 
         await deleteWallet(walletId);
-        return res.send("Wallet deleted successfully");
+        return res.status(200).send("Wallet deleted successfully");
     } catch (e: any) {
         console.error(e);
         return res.sendStatus(401);

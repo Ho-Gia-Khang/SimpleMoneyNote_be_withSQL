@@ -21,6 +21,7 @@ model User {
   book        Book[]
   wallet      Wallet[]
   Session     Session[]
+  Category    Category[]
 }
 
 model Session {
@@ -84,6 +85,8 @@ model Category {
   name   String  @unique
   type   Type    @default(expense)
   icon   String  @default("/assets/default-category-icon.svg")
+  user   User    @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  userId String  @unique
   note   Note[]
   budget Budget?
 }
