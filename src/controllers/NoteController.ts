@@ -12,6 +12,7 @@ import {
     getNotesInput,
 } from "../models/NoteModel";
 import { findBook } from "../services/BookService";
+import { StatusCodes } from "http-status-codes";
 
 export async function getNotesHandler(
     req: Request<getNotesInput["params"]>,
@@ -21,7 +22,9 @@ export async function getNotesHandler(
         const bookId = req.params.bookId;
         const notes = await findNotes(bookId);
         if (!notes) {
-            return res.send(`Book with id ${bookId} does not have any notes`);
+            return res
+                .status(StatusCodes.NOT_FOUND)
+                .send(`Book with id ${bookId} does not have any notes`);
         }
 
         const noteInfos = notes.map((note) => {
@@ -35,10 +38,10 @@ export async function getNotesHandler(
                 walletId: note.walletId,
             };
         });
-        return res.send(noteInfos);
+        return res.status(StatusCodes.OK).send(noteInfos);
     } catch (e: any) {
         console.error(e);
-        return res.sendStatus(401);
+        return res.sendStatus(StatusCodes.INTERNAL_SERVER_ERROR);
     }
 }
 
@@ -50,13 +53,15 @@ export async function getNoteDetailHandler(
         const noteId = req.params.noteId;
         const note = await findNote(noteId);
         if (!note) {
-            return res.send(`Note with id ${noteId} not found`);
+            return res
+                .status(StatusCodes.NOT_FOUND)
+                .send(`Note with id ${noteId} not found`);
         }
 
-        return res.send(note);
+        return res.status(StatusCodes.OK).send(note);
     } catch (e: any) {
         console.error(e);
-        return res.sendStatus(401);
+        return res.sendStatus(StatusCodes.INTERNAL_SERVER_ERROR);
     }
 }
 
@@ -68,7 +73,9 @@ export async function createNoteHandler(
         const bookId = req.params.bookId;
         const book = await findBook(bookId);
         if (!book) {
-            return res.status(404).send(`Book with id ${bookId} not found`);
+            return res
+                .status(StatusCodes.NOT_FOUND)
+                .send(`Book with id ${bookId} not found`);
         }
 
         const userId = res.locals.user.id;
@@ -78,10 +85,10 @@ export async function createNoteHandler(
             userId: userId,
             input: req.body,
         });
-        return res.send(newNote);
+        return res.status(StatusCodes.CREATED).send(newNote);
     } catch (e: any) {
         console.error(e);
-        return res.sendStatus(401);
+        return res.sendStatus(StatusCodes.INTERNAL_SERVER_ERROR);
     }
 }
 
@@ -93,17 +100,19 @@ export async function updateNoteHandler(
         const noteId = req.params.noteId;
         const note = await findNote(noteId);
         if (!note) {
-            return res.send(`Note with id ${noteId} not found`);
+            return res
+                .status(StatusCodes.NOT_FOUND)
+                .send(`Note with id ${noteId} not found`);
         }
 
         const updatedNote = await updateNote({
             noteId: noteId,
             input: req.body,
         });
-        return res.status(404).send(updatedNote);
+        return res.status(StatusCodes.NOT_FOUND).send(updatedNote);
     } catch (e: any) {
         console.error(e);
-        return res.sendStatus(401);
+        return res.sendStatus(StatusCodes.INTERNAL_SERVER_ERROR);
     }
 }
 
@@ -115,13 +124,15 @@ export async function deleteNoteHandler(
         const noteId = req.params.noteId;
         const note = await findNote(noteId);
         if (!note) {
-            return res.status(404).send(`Note with id ${noteId} not found`);
+            return res
+                .status(StatusCodes.NOT_FOUND)
+                .send(`Note with id ${noteId} not found`);
         }
 
         await deleteNote(noteId);
-        return res.sendStatus(200);
+        return res.sendStatus(StatusCodes.OK);
     } catch (e: any) {
         console.error(e);
-        return res.sendStatus(401);
+        return res.sendStatus(StatusCodes.INTERNAL_SERVER_ERROR);
     }
 }

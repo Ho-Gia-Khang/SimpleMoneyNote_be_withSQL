@@ -7,6 +7,7 @@ import {
     updateSession,
 } from "../services/SessionService";
 import { signJwt } from "../utils/jwt";
+import { StatusCodes } from "http-status-codes";
 
 export async function createUserSessionHandler(req: Request, res: Response) {
     // validate user password
@@ -16,7 +17,9 @@ export async function createUserSessionHandler(req: Request, res: Response) {
     });
 
     if (!user) {
-        return res.status(401).send("Invalid email or password");
+        return res
+            .status(StatusCodes.NOT_ACCEPTABLE)
+            .send("Invalid email or password");
     }
 
     //create a session
@@ -35,7 +38,7 @@ export async function createUserSessionHandler(req: Request, res: Response) {
     );
 
     res.locals.user = user;
-    return res.send({ accessToken, refreshToken });
+    return res.status(StatusCodes.OK).send({ accessToken, refreshToken });
 }
 
 export async function getUserSessionsHandler(req: Request, res: Response) {
@@ -43,7 +46,7 @@ export async function getUserSessionsHandler(req: Request, res: Response) {
 
     const sessions = await findSessions({ userId: userId, valid: true });
 
-    return res.send(sessions);
+    return res.status(StatusCodes.OK).send(sessions);
 }
 
 export async function deleteSessionHandler(req: Request, res: Response) {
@@ -55,7 +58,7 @@ export async function deleteSessionHandler(req: Request, res: Response) {
         await deleteSessions({ userId: userId, valid: false });
     }
 
-    return res.send({
+    return res.status(StatusCodes.OK).send({
         accessToken: null,
         refreshToken: null,
     });

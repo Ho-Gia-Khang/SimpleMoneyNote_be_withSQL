@@ -11,6 +11,7 @@ import {
     updateBudget,
 } from "../services/BudgetService";
 import { findCategory } from "../services/CategoryService";
+import { StatusCodes } from "http-status-codes";
 
 export async function getBudgetHandler(
     req: Request<getBudgetDetailInput["params"]>,
@@ -19,10 +20,10 @@ export async function getBudgetHandler(
     try {
         const budgetId = req.params.budgetId;
         const budgets = await findBudget(budgetId);
-        return res.send(budgets);
+        return res.status(StatusCodes.OK).send(budgets);
     } catch (e: any) {
         console.error(e);
-        return res.sendStatus(401);
+        return res.sendStatus(StatusCodes.INTERNAL_SERVER_ERROR);
     }
 }
 
@@ -39,7 +40,7 @@ export async function createBudgetHandler(
         const category = await findCategory(categoryId);
         if (!category) {
             return res
-                .status(404)
+                .status(StatusCodes.NOT_FOUND)
                 .send(`Category with id ${categoryId} not found`);
         }
 
@@ -48,10 +49,10 @@ export async function createBudgetHandler(
             input: req.body,
         });
 
-        return res.send(newBudget);
+        return res.status(StatusCodes.CREATED).send(newBudget);
     } catch (e: any) {
         console.error(e);
-        return res.sendStatus(401);
+        return res.sendStatus(StatusCodes.INTERNAL_SERVER_ERROR);
     }
 }
 
@@ -63,14 +64,16 @@ export async function updateBudgetHandler(
         const budgetId = req.params.budgetId;
         const budget = await findBudget(budgetId);
         if (!budget) {
-            return res.status(404).send(`Budget with id ${budgetId} not found`);
+            return res
+                .status(StatusCodes.NOT_FOUND)
+                .send(`Budget with id ${budgetId} not found`);
         }
 
         const updatedBudget = await updateBudget({
             budgetId: budgetId,
             input: req.body,
         });
-        return res.send(updatedBudget);
+        return res.status(StatusCodes.OK).send(updatedBudget);
     } catch (e: any) {
         console.error(e);
         return res.sendStatus(401);
@@ -85,13 +88,15 @@ export async function deleteBudgetHandler(
         const budgetId = req.params.budgetId;
         const budget = await findBudget(budgetId);
         if (!budget) {
-            return res.status(404).send(`Budget with id ${budgetId} not found`);
+            return res
+                .status(StatusCodes.NOT_FOUND)
+                .send(`Budget with id ${budgetId} not found`);
         }
 
         await deleteBudget(budgetId);
         return res.send("Budget deleted successfully");
     } catch (e: any) {
         console.error(e);
-        return res.sendStatus(401);
+        return res.sendStatus(StatusCodes.INTERNAL_SERVER_ERROR);
     }
 }

@@ -7,6 +7,7 @@ import {
     deleteBook,
 } from "../services/BookService";
 import { CreateBookInput, GetBookDetailInput } from "../models/BookModel";
+import { StatusCodes } from "http-status-codes";
 
 export async function getBooksHandler(req: Request, res: Response) {
     try {
@@ -15,7 +16,7 @@ export async function getBooksHandler(req: Request, res: Response) {
         const books = await findBooks(userId);
         if (!books) {
             return res
-                .status(404)
+                .status(StatusCodes.NOT_FOUND)
                 .send(`User with id ${userId} does not have any books`);
         }
 
@@ -25,10 +26,10 @@ export async function getBooksHandler(req: Request, res: Response) {
                 name: book.name,
             };
         });
-        return res.send(bookInfos);
+        return res.status(StatusCodes.OK).send(bookInfos);
     } catch (e: any) {
         console.error(e);
-        return res.sendStatus(401);
+        return res.sendStatus(StatusCodes.INTERNAL_SERVER_ERROR);
     }
 }
 
@@ -40,13 +41,15 @@ export async function getBookDetailHandler(
         const bookId = req.params.bookId;
         const book = await findBook(bookId);
         if (!book) {
-            return res.send(`Book with id ${bookId} not found`);
+            return res
+                .status(StatusCodes.NOT_FOUND)
+                .send(`Book with id ${bookId} not found`);
         }
 
-        return res.send(book);
+        return res.status(StatusCodes.OK).send(book);
     } catch (e: any) {
         console.error(e);
-        return res.sendStatus(401);
+        return res.sendStatus(StatusCodes.INTERNAL_SERVER_ERROR);
     }
 }
 
@@ -57,10 +60,10 @@ export async function createBookHandler(
     try {
         const userId = res.locals.user.id;
         const newBook = await createBook({ input: req.body, userId: userId });
-        return res.send(newBook);
+        return res.status(StatusCodes.CREATED).send(newBook);
     } catch (e: any) {
         console.error(e);
-        return res.sendStatus(401);
+        return res.sendStatus(StatusCodes.INTERNAL_SERVER_ERROR);
     }
 }
 
@@ -72,22 +75,24 @@ export async function updateBookHandler(
         const bookId = req.params.bookId;
         const book = await findBook(bookId);
         if (!book) {
-            return res.status(404).send(`Book with id ${bookId} not found`);
+            return res
+                .status(StatusCodes.NOT_FOUND)
+                .send(`Book with id ${bookId} not found`);
         }
 
         const userId = res.locals.user.id;
         if (userId !== book.userId) {
-            return res.status(403).send("Unauthorized");
+            return res.status(StatusCodes.UNAUTHORIZED).send("Unauthorized");
         }
 
         const updatedBook = await updateBook({
             bookId: bookId,
             input: req.body,
         });
-        return res.send(updatedBook);
+        return res.status(StatusCodes.OK).send(updatedBook);
     } catch (e: any) {
         console.error(e);
-        return res.sendStatus(401);
+        return res.sendStatus(StatusCodes.INTERNAL_SERVER_ERROR);
     }
 }
 
@@ -99,18 +104,20 @@ export async function deleteBookHandler(
         const bookId = req.params.bookId;
         const book = await findBook(bookId);
         if (!book) {
-            return res.status(404).send(`Book with id ${bookId} not found`);
+            return res
+                .status(StatusCodes.NOT_FOUND)
+                .send(`Book with id ${bookId} not found`);
         }
 
         const userId = res.locals.user.id;
         if (userId !== book.userId) {
-            return res.status(403).send("Unauthorized");
+            return res.status(StatusCodes.UNAUTHORIZED).send("Unauthorized");
         }
 
         await deleteBook(bookId);
-        return res.sendStatus(200);
+        return res.sendStatus(StatusCodes.OK);
     } catch (e: any) {
         console.error(e);
-        return res.sendStatus(401);
+        return res.sendStatus(StatusCodes.INTERNAL_SERVER_ERROR);
     }
 }

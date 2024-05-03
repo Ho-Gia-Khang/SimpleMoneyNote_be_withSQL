@@ -25,6 +25,8 @@ app.use("/note", noteRouter);
 app.use("/category", categoryRouter);
 app.use("/budget", budgetRouter);
 
-app.listen(2000, () => {
-    console.log("Server is running on port 2000");
+const port = 2000;
+
+app.listen(port, () => {
+    console.log(`Server is running on port ${port}`);
 });

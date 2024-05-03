@@ -1,4 +1,5 @@
 import { NextFunction, Request, Response } from "express";
+import { StatusCodes } from "http-status-codes";
 import { createAppSettingsInput } from "../models/AppSettingsModel";
 import {
     createAppSettings,
@@ -15,10 +16,10 @@ export async function getAppSettingsHandler(req: Request, res: Response) {
                 `App settings for user with id ${userId} not found`
             );
         }
-        return res.send(appSettings);
+        return res.status(StatusCodes.OK).send(appSettings);
     } catch (e: any) {
         console.error(e);
-        return res.sendStatus(401);
+        return res.sendStatus(StatusCodes.INTERNAL_SERVER_ERROR);
     }
 }
 
@@ -36,7 +37,7 @@ export async function createAppSettingsHandler(
         return next();
     } catch (e: any) {
         console.error(e);
-        return next(e);
+        return next();
     }
 }
 
@@ -48,18 +49,18 @@ export async function updateAppSettingsHandler(
         const userId = res.locals.user.id;
         const appSettings = await findAppSettings(userId);
         if (!appSettings) {
-            return res.send(
-                `App settings for user with id ${userId} not found`
-            );
+            return res
+                .status(StatusCodes.NOT_FOUND)
+                .send(`App settings for user with id ${userId} not found`);
         }
 
         const updatedAppSettings = await updateAppSettings({
             AppSettingsId: appSettings.id,
             input: req.body,
         });
-        return res.send(updatedAppSettings);
+        return res.status(StatusCodes.OK).send(updatedAppSettings);
     } catch (e: any) {
         console.error(e);
-        return res.sendStatus(401);
+        return res.sendStatus(StatusCodes.INTERNAL_SERVER_ERROR);
     }
 }

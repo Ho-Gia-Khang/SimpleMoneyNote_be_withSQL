@@ -7,6 +7,7 @@ import {
     updateWallet,
 } from "../services/WalletService";
 import { createWalletInput, getWalletDetailInput } from "../models/WalletModel";
+import { StatusCodes } from "http-status-codes";
 
 export async function getWalletsHandler(req: Request, res: Response) {
     try {
@@ -15,7 +16,7 @@ export async function getWalletsHandler(req: Request, res: Response) {
         const wallets = await findWallets(userId);
         if (!wallets) {
             return res
-                .status(404)
+                .status(StatusCodes.NOT_FOUND)
                 .send(`User with id ${userId} does not have any wallets`);
         }
 
@@ -27,10 +28,10 @@ export async function getWalletsHandler(req: Request, res: Response) {
                 interest: wallet.interest,
             };
         });
-        return res.send(walletInfos);
+        return res.status(StatusCodes.OK).send(walletInfos);
     } catch (e: any) {
         console.error(e);
-        return res.sendStatus(401);
+        return res.sendStatus(StatusCodes.INTERNAL_SERVER_ERROR);
     }
 }
 
@@ -45,10 +46,10 @@ export async function getWalletDetailHandler(
             return res.send(`Wallet with id ${walletId} not found`);
         }
 
-        return res.send(wallet);
+        return res.status(StatusCodes.OK).send(wallet);
     } catch (e: any) {
         console.error(e);
-        return res.sendStatus(401);
+        return res.sendStatus(StatusCodes.INTERNAL_SERVER_ERROR);
     }
 }
 
@@ -62,10 +63,10 @@ export async function createWalletHandler(
             userId: userId,
             input: req.body,
         });
-        return res.send(newWallet);
+        return res.status(StatusCodes.OK).send(newWallet);
     } catch (e: any) {
         console.error(e);
-        return res.sendStatus(401);
+        return res.sendStatus(StatusCodes.INTERNAL_SERVER_ERROR);
     }
 }
 
@@ -77,22 +78,24 @@ export async function updateWalletHandler(
         const walletId = req.params.walletId;
         const wallet = await findWallet(walletId);
         if (!wallet) {
-            return res.status(404).send(`Wallet with id ${walletId} not found`);
+            return res
+                .status(StatusCodes.NOT_FOUND)
+                .send(`Wallet with id ${walletId} not found`);
         }
 
         const userId = res.locals.user.id;
         if (userId !== wallet.userId) {
-            return res.status(401).send("Unauthorized");
+            return res.status(StatusCodes.UNAUTHORIZED).send("Unauthorized");
         }
 
         const updatedWallet = await updateWallet({
             walletId: walletId,
             input: req.body,
         });
-        return res.send(updatedWallet);
+        return res.status(StatusCodes.OK).send(updatedWallet);
     } catch (e: any) {
         console.error(e);
-        return res.sendStatus(401);
+        return res.sendStatus(StatusCodes.INTERNAL_SERVER_ERROR);
     }
 }
 
@@ -104,18 +107,20 @@ export async function deleteWallethandler(
         const walletId = req.params.walletId;
         const wallet = await findWallet(walletId);
         if (!wallet) {
-            return res.status(404).send(`Wallet with id ${walletId} not found`);
+            return res
+                .status(StatusCodes.NOT_FOUND)
+                .send(`Wallet with id ${walletId} not found`);
         }
 
         const userId = res.locals.user.id;
         if (userId !== wallet.userId) {
-            return res.status(401).send("Unauthorized");
+            return res.status(StatusCodes.UNAUTHORIZED).send("Unauthorized");
         }
 
         await deleteWallet(walletId);
-        return res.status(200).send("Wallet deleted successfully");
+        return res.status(StatusCodes.OK);
     } catch (e: any) {
         console.error(e);
-        return res.sendStatus(401);
+        return res.sendStatus(StatusCodes.INTERNAL_SERVER_ERROR);
     }
 }

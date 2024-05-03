@@ -10,6 +10,7 @@ import {
     createCategoryInput,
     getCategoryDetailInput,
 } from "../models/CategoryModel";
+import { StatusCodes } from "http-status-codes";
 
 export async function getCategoriesHandler(req: Request, res: Response) {
     try {
@@ -18,13 +19,13 @@ export async function getCategoriesHandler(req: Request, res: Response) {
 
         if (!categories) {
             return res
-                .status(404)
+                .status(StatusCodes.NOT_FOUND)
                 .send(`No categories for user Id ${userId} found`);
         }
-        return res.send(categories);
+        return res.status(StatusCodes.OK).send(categories);
     } catch (e: any) {
         console.error(e);
-        return res.sendStatus(401);
+        return res.sendStatus(StatusCodes.INTERNAL_SERVER_ERROR);
     }
 }
 
@@ -39,10 +40,10 @@ export async function getCategoryDetailHandler(
             return res.send(`Category with id ${categoryId} not found`);
         }
 
-        return res.send(category);
+        return res.status(StatusCodes.OK).send(category);
     } catch (e: any) {
         console.error(e);
-        return res.sendStatus(401);
+        return res.sendStatus(StatusCodes.INTERNAL_SERVER_ERROR);
     }
 }
 
@@ -56,10 +57,10 @@ export async function createCategoryHandler(
             userId: userId,
             input: req.body,
         });
-        return res.send(newCategory);
+        return res.status(StatusCodes.CREATED).send(newCategory);
     } catch (e: any) {
         console.error(e);
-        return res.sendStatus(401);
+        return res.sendStatus(StatusCodes.INTERNAL_SERVER_ERROR);
     }
 }
 
@@ -72,23 +73,23 @@ export async function updateCategoryHandler(
         const category = await findCategory(categoryId);
         if (!category) {
             return res
-                .status(404)
+                .status(StatusCodes.NOT_FOUND)
                 .send(`Category with id ${categoryId} not found`);
         }
 
         const userId = res.locals.user.id;
         if (userId !== category.userId) {
-            return res.status(401).send("Unauthorized");
+            return res.status(StatusCodes.UNAUTHORIZED).send("Unauthorized");
         }
 
         const updatedCategory = await updateCategory({
             categoryId: categoryId,
             input: req.body,
         });
-        return res.send(updatedCategory);
+        return res.status(StatusCodes.OK).send(updatedCategory);
     } catch (e: any) {
         console.error(e);
-        return res.sendStatus(401);
+        return res.sendStatus(StatusCodes.INTERNAL_SERVER_ERROR);
     }
 }
 
@@ -101,19 +102,19 @@ export async function deleteCategoryHandler(
         const category = await findCategory(categoryId);
         if (!category) {
             return res
-                .status(404)
+                .status(StatusCodes.NOT_FOUND)
                 .send(`Category with id ${categoryId} not found`);
         }
 
         const userId = res.locals.user.id;
         if (userId !== category.userId) {
-            return res.status(401).send("Unauthorized");
+            return res.status(StatusCodes.UNAUTHORIZED).send("Unauthorized");
         }
 
         await deleteCategory(categoryId);
-        return res.status(200).send("Category deleted successfully");
+        return res.status(StatusCodes.OK).send("Category deleted successfully");
     } catch (e: any) {
         console.error(e);
-        return res.sendStatus(401);
+        return res.sendStatus(StatusCodes.INTERNAL_SERVER_ERROR);
     }
 }
