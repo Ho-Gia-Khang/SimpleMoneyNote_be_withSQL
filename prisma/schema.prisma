@@ -46,7 +46,7 @@ model Book {
   id     String @id @default(cuid())
   name   String @unique
   user   User   @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
-  userId String @unique
+  userId String
   Note   Note[]
 }
 

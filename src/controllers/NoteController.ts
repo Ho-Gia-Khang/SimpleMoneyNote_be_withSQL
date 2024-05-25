@@ -109,7 +109,7 @@ export async function updateNoteHandler(
             noteId: noteId,
             input: req.body,
         });
-        return res.status(StatusCodes.NOT_FOUND).send(updatedNote);
+        return res.status(StatusCodes.OK).send(updatedNote);
     } catch (e: any) {
         console.error(e);
         return res.sendStatus(StatusCodes.INTERNAL_SERVER_ERROR);
