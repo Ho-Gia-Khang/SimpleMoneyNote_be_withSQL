@@ -3,6 +3,7 @@ import { omit } from "lodash";
 import { CreateUserInput } from "../models/UserModel";
 import { createUser, deleteUser, findUser } from "../services/UserService";
 import { StatusCodes } from "http-status-codes";
+import { createBook } from "../services/BookService";
 
 export const getUserhandler = async () => {};
 
@@ -16,6 +17,13 @@ export const createUserHandler = async (
         );
 
         res.locals.user = newUser;
+
+        await createBook({
+            input: {
+                name: "Default book",
+            },
+            userId: res.locals.user.id,
+        });
         return res.status(StatusCodes.CREATED).send(omit(newUser, "password"));
     } catch (e: any) {
         console.log(e);

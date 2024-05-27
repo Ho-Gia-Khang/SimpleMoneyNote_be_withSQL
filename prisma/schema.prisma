@@ -44,10 +44,12 @@ model AppSettings {
 
 model Book {
   id     String @id @default(cuid())
-  name   String @unique
+  name   String
   user   User   @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   userId String
   Note   Note[]
+
+  @@unique([userId, name])
 }
 
 model Note {
