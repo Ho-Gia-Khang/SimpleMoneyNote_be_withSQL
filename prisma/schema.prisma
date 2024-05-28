@@ -61,11 +61,15 @@ model Note {
   description String?
   currency    String
   book        Book      @relation(fields: [bookId], references: [id], onDelete: Cascade, onUpdate: Cascade)
-  bookId      String    @unique
+  bookId      String
   wallet      Wallet?   @relation(fields: [walletId], references: [id])
-  walletId    String?   @unique
+  walletId    String?
   category    Category? @relation(fields: [categoryId], references: [id])
-  categoryId  String?   @unique
+  categoryId  String?
+
+  @@unique([id, bookId])
+  @@unique([id, walletId])
+  @@unique([id, categoryId])
 }
 
 model Wallet {
@@ -86,13 +90,15 @@ model Wallet {
 
 model Category {
   id     String   @id @default(cuid())
-  name   String   @unique
+  name   String
   type   Type     @default(expense)
   icon   String   @default("/assets/default-category-icon.svg")
   user   User     @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
-  userId String   @unique
+  userId String
   note   Note[]
   budget Budget[]
+
+  @@unique([userId, name])
 }
 
 model Budget {
