@@ -3,6 +3,7 @@ import validate from "../middlewares/validateResource";
 import requireUser from "../middlewares/requireUser";
 import {
     createWalletHandler,
+    deleteWallethandler,
     getWalletDetailHandler,
     getWalletsHandler,
     updateWalletHandler,
@@ -33,7 +34,7 @@ walletRouter.put(
 walletRouter.delete(
     "/delete/:walletId",
     [requireUser, validate(walletParams)],
-    updateWalletHandler
+    deleteWallethandler
 );
 
 export default walletRouter;

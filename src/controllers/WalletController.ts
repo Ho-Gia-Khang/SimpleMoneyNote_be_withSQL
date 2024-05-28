@@ -63,7 +63,7 @@ export async function createWalletHandler(
             userId: userId,
             input: req.body,
         });
-        return res.status(StatusCodes.OK).send(newWallet);
+        return res.status(StatusCodes.CREATED).send(newWallet);
     } catch (e: any) {
         console.error(e);
         return res.sendStatus(StatusCodes.INTERNAL_SERVER_ERROR);
@@ -118,7 +118,7 @@ export async function deleteWallethandler(
         }
 
         await deleteWallet(walletId);
-        return res.status(StatusCodes.OK);
+        return res.sendStatus(StatusCodes.OK);
     } catch (e: any) {
         console.error(e);
         return res.sendStatus(StatusCodes.INTERNAL_SERVER_ERROR);

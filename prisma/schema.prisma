@@ -71,15 +71,17 @@ model Note {
 model Wallet {
   id          String  @id @default(cuid())
   user        User    @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
-  userId      String  @unique
+  userId      String
   note        Note[]
-  name        String  @unique
+  name        String
   balance     Float
   currency    String
   icon        String  @default("/assets/default-wallet-icon.svg")
   theme       String
   interest    Float?
   description String?
+
+  @@unique([userId, name])
 }
 
 model Category {

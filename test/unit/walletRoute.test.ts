@@ -1,10 +1,10 @@
 import app from "../../src/index";
 import request from "supertest";
 
-describe("The CRUD functionalities of book endpoints", function () {
+describe("The CRUD functionalities of wallet endpoints", function () {
     let accessToken: string;
     let refreshToken: string;
-    let bookId: string;
+    let walletId: string;
 
     beforeAll(async function () {
         // simulate the login process
@@ -17,27 +17,26 @@ describe("The CRUD functionalities of book endpoints", function () {
         accessToken = userResponse.body.accessToken;
     });
 
-    it("should create a new book", async function () {
-        // simulate creating a new book
-        const bookResponse = await request(app)
-            .post(`/book/create`)
+    it("should create a new wallet", async function () {
+        const response = await request(app)
+            .post("/wallet/create")
             .set({
                 authorization: `Bearer ${accessToken}`,
                 x_refresh: refreshToken,
             })
             .send({
-                name: "Test book",
+                name: "test wallet",
+                balance: 2000000,
             });
 
-        expect(bookResponse.status).toEqual(201);
-        expect(bookResponse.body).toHaveProperty("id");
-
-        bookId = bookResponse.body.id;
+        walletId = response.body.id;
+        expect(response.status).toEqual(201);
+        expect(response.body).toHaveProperty("id");
     });
 
-    it("should get all books", async function () {
+    it("should get all wallets", async function () {
         const response = await request(app)
-            .get(`/book/getAll`)
+            .get("/wallet/getAll")
             .set({
                 authorization: `Bearer ${accessToken}`,
                 x_refresh: refreshToken,
@@ -47,9 +46,9 @@ describe("The CRUD functionalities of book endpoints", function () {
         expect(response.body).toBeInstanceOf(Array);
     });
 
-    it("should get a book by id", async function () {
+    it("should get a wallet by id", async function () {
         const response = await request(app)
-            .get(`/book/getOne/${bookId}`)
+            .get(`/wallet/getOne/${walletId}`)
             .set({
                 authorization: `Bearer ${accessToken}`,
                 x_refresh: refreshToken,
@@ -59,24 +58,24 @@ describe("The CRUD functionalities of book endpoints", function () {
         expect(response.body).toHaveProperty("id");
     });
 
-    it("should update a book", async function () {
+    it("should update a wallet", async function () {
         const response = await request(app)
-            .put(`/book/update/${bookId}`)
+            .put(`/wallet/update/${walletId}`)
             .set({
                 authorization: `Bearer ${accessToken}`,
                 x_refresh: refreshToken,
             })
             .send({
-                name: "Updated book",
+                name: "updated wallet",
             });
 
         expect(response.status).toEqual(200);
         expect(response.body).toHaveProperty("id");
     });
 
-    it("should delete a book", async function () {
+    it("should delete a wallet", async function () {
         const response = await request(app)
-            .delete(`/book/delete/${bookId}`)
+            .delete(`/wallet/delete/${walletId}`)
             .set({
                 authorization: `Bearer ${accessToken}`,
                 x_refresh: refreshToken,
