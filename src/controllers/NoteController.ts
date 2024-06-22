@@ -13,6 +13,8 @@ import {
 } from "../models/NoteModel";
 import { findBook } from "../services/BookService";
 import { StatusCodes } from "http-status-codes";
+import { findWallet, updateWallet } from "../services/WalletService";
+import { WalletInput } from "../models/WalletModel";
 
 export async function getNotesHandler(
     req: Request<getNotesInput["params"]>,
@@ -80,10 +82,12 @@ export async function createNoteHandler(
 
         const userId = res.locals.user.id;
 
+        const date = new Date(req.body.date!);
+
         const newNote = await createNote({
             bookId: bookId,
             userId: userId,
-            input: req.body,
+            input: { ...req.body, date: date },
         });
         return res.status(StatusCodes.CREATED).send(newNote);
     } catch (e: any) {
@@ -105,9 +109,11 @@ export async function updateNoteHandler(
                 .send(`Note with id ${noteId} not found`);
         }
 
+        const date = new Date(req.body.date!);
+
         const updatedNote = await updateNote({
             noteId: noteId,
-            input: req.body,
+            input: { ...req.body, date: date },
         });
         return res.status(StatusCodes.OK).send(updatedNote);
     } catch (e: any) {
@@ -127,6 +133,19 @@ export async function deleteNoteHandler(
             return res
                 .status(StatusCodes.NOT_FOUND)
                 .send(`Note with id ${noteId} not found`);
+        }
+
+        const walletId = note.walletId;
+        if (walletId) {
+            const wallet = await findWallet(walletId);
+            const newBalance =
+                note.type === "income"
+                    ? wallet!.balance - note.amount
+                    : wallet!.balance + note.amount;
+            await updateWallet({
+                walletId: walletId,
+                input: { name: wallet!.name, balance: newBalance },
+            });
         }
 
         await deleteNote(noteId);

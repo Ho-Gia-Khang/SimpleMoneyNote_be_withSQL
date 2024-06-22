@@ -8,7 +8,7 @@ export interface NoteInput {
     date?: Date;
     description?: string;
     currency?: string;
-    categoryId?: string;
+    categoryId: string;
     walletId?: string;
 }
 
@@ -18,11 +18,14 @@ export const createNoteSchema = object({
             required_error: "Note amount is required",
         }),
         type: types.optional(),
-        date: date({}).optional(),
+        date: string().optional(),
         description: string({}).optional(),
         currency: string({}).optional(),
-        categoryId: string({}).optional(),
+        categoryId: string({
+            required_error: "Category ID is required",
+        }),
         walletId: string({}).optional(),
+        theme: string({}).optional(),
     }),
 });
 
